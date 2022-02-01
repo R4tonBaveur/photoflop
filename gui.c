@@ -1,18 +1,18 @@
-#include "image.h"
-#include <SDL2/SDL.h>
-#include <stdio.h>
-int main(){
-    if(0 != SDL_Init(SDL_INIT_VIDEO))
-    {
-        fprintf(stderr, "Error SDL_Init : %s", SDL_GetError());
-        return EXIT_FAILURE;
-    }
-    SDL_Surface* cat = loadImage("images/cat.jpg");
-    if(cat){
-        displaySurface(cat);
-    } else {
-        printf("Something went wrong while loading the image");
-    }
-    SDL_FreeSurface(cat);
-    return 0;
+#include <gtk/gtk.h>
+
+int main(int argc, char *argv[]) {
+
+  GtkWidget *window;
+
+  gtk_init(&argc, &argv);
+
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_widget_show(window);
+  
+  g_signal_connect(window, "destroy",
+      G_CALLBACK(gtk_main_quit), NULL);  
+
+  gtk_main();
+
+  return 0;
 }

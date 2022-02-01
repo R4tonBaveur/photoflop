@@ -1,8 +1,9 @@
 CC = gcc
-CFLAGS= -Wall -Wextra -std=c99 -O3 -fsanitize=address -g
-
+# Flags for the compilation
+CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -fsanitize=address -g
 # Libraries and path for linker
 LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image
+
 
 # Linkers (usually empty)
 LDFLAGS=-fsanitize=address
