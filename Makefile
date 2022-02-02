@@ -10,7 +10,7 @@ LDFLAGS=-fsanitize=address
 #FILES
 SRCGUI=gui.c
 SRCFILTERS=filters.c
-SRCSELECT=select.c
+SRCSELECT=select.c get_coord.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c
 OBJGUI = ${SRCGUI:%.c=%.o}
