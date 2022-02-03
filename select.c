@@ -12,10 +12,8 @@ int main()
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Surface* image = IMG_Load("./images/cat.jpg");
-
     displaySurface(image);
-    //get_coord(image, &x, &y);
-    //printf("x = %zu\n y = %zu\n", x, y);
+    get_coord(image, &x, &y);
 
     return 0;
 }
