@@ -58,6 +58,16 @@
                         <property name="use-stock">False</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="Save">
+                        <property name="label">Save</property>
+                        <property name="name">Open</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">OpenImage1</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -138,12 +148,11 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="Adapt">
-                        <property name="label">Adapt</property>
-                        <property name="name">Open</property>
+                      <object class="GtkImageMenuItem" id="GoBack">
+                        <property name="label">GoBack</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="image">OpenImage1</property>
+                        <property name="image">SquareImage1</property>
                         <property name="use-stock">False</property>
                       </object>
                     </child>
@@ -171,9 +180,23 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="FileName">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">FileName.jpg</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="SquareImage1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
   </object>
 </interface>
