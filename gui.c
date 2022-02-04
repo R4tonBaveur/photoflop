@@ -15,6 +15,7 @@ GtkWidget* DrawingArea;
 GtkWidget* Layout; 
 SDL_Surface* Surface;
 int Zoom = 50;
+
 // Callback Functions
 void on_open(){
     printf("Open Clicked\n");
@@ -30,8 +31,8 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
     int width, height;
     Uint8 r,g,b;
     Uint32 C;
-    width = Surface->w;//gtk_widget_get_allocated_width(widget);
-    height = Surface->h;//gtk_widget_get_allocated_height(widget);
+    width = Surface->w;
+    height = Surface->h;
     for(double x=0;x<width;x+=step){
         for(double y=0;y<height;y+=step){
             C = getPixel(Surface, (int) x, (int) y);
@@ -81,7 +82,9 @@ int main(int argc, char **argv){
     DrawingArea = GTK_WIDGET(gtk_builder_get_object(builder,"DrawingArea"));    
     
     // Displaying the window
-    gtk_window_set_default_size(GTK_WINDOW(Window),Surface->w+20,Surface->h+20);
+    gtk_window_set_default_size(GTK_WINDOW(Window),
+            (int) ((double) (Surface->w)/((double) 100/(double) Zoom)),
+            (int) ((double) (Surface->h)/((double) 100/(double) Zoom))+20);
     gtk_widget_show_all(Window);
     gtk_widget_show(Window);
 
