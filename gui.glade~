@@ -12,6 +12,11 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
+  <object class="GtkImage" id="OpenImage1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
   <object class="GtkImage" id="RectangleImage">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -123,6 +128,29 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="GtkMenuItem" id="Actions">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Actions</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="ActionsSubMenu">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="Adapt">
+                        <property name="label">Adapt</property>
+                        <property name="name">Open</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">OpenImage1</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -136,7 +164,7 @@
             <property name="can-focus">False</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
