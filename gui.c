@@ -16,9 +16,30 @@ GtkWidget* Layout;
 SDL_Surface* Surface;
 int Zoom = 50;
 
+// Resize the Surface to fit the app
+SDL_Surface* resize(SDL_Surface* image){
+    int target = 700;
+    int width = target;
+    int height = target;
+    if(image->w>image->h){
+        height = image->h*target/image->w;
+    } else {
+        width = image->w*target/image->h;
+    }
+    SDL_Surface* res = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
+    for(int x=0;x<width;x++){
+        for(int y=0;y<height;y++){
+            setPixel(res,x,y,getPixel(image,x*image->w/target,y*image->h/target));
+        }
+    }
+    SDL_FreeSurface(image);
+    return res;
+}
 // Callback Functions
 void on_open(){
+    Zoom-=10;
     printf("Open Clicked\n");
+    gtk_widget_queue_draw(DrawingArea);
 }
 
 void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
@@ -49,7 +70,6 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
 }
 
 
-
 int main(int argc, char **argv){
     // Initializes GTK
     gtk_init(NULL, NULL);
@@ -64,7 +84,7 @@ int main(int argc, char **argv){
         return 1;
     }
     // The image
-    Surface = loadImage("images/cat.jpg");
+    Surface = resize(loadImage("images/cat.jpg"));
     if(Surface==NULL){
         printf("Error while loading surface\n");
         return 1;

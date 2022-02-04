@@ -15,10 +15,11 @@ Uint32 getPixel(SDL_Surface *image,uint16_t x,uint16_t y){
         case 2:
             return *(Uint16 *)p;
         case 3:
-            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            //if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 return p[0] << 16 | p[1] << 8 | p[2];
-            else
-                return p[0] | p[1] << 8 | p[2] << 16;
+            //} else {
+                //return p[0] | p[1] << 8 | p[2] << 16;
+            //}
         case 4:
             return *(Uint32 *)p;
         default:
@@ -30,15 +31,42 @@ Uint32 getPixel(SDL_Surface *image,uint16_t x,uint16_t y){
  * image: the image
  * x,y: coordinates of the pixel
  */
-void setPixel(SDL_Surface *image,uint16_t x,uint16_t y,Uint32 color){
-    if(x>image->w||y>image->h){
-        //printf("setPixel: You are trying to access a pixel outside of the image\n");
-        return;
-    }
-    Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) image->pixels
-                                              + y * image->pitch
-                                              + x * image->format->BytesPerPixel);
-    *target_pixel = color;
+void setPixel(SDL_Surface *surface,uint16_t x,uint16_t y,Uint32 pixel){
+    /*récupération du format de l'image*/
+    int bpp = surface->format->BytesPerPixel;
+ 
+    /*pointeur 8 bits sur le pixel num*/
+    uint8_t *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+ 
+    switch(bpp)
+    {
+        case 1:/*couleur 8 bits*/
+            *p = pixel;
+        break;
+ 
+        case 2:/*couleur 16 bits*/
+            *(Uint16 *)p = pixel;
+        break;
+ 
+        case 3:/*couleur 24 bits*/
+            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            {/*pile uc en big endian*/
+                p[0] = (pixel >> 16) & 0xff;
+                p[1] = (pixel >> 8) & 0xff;
+                p[2] = pixel & 0xff;
+            }
+            else
+            {/*pile uc en little endian*/
+                p[0] = pixel & 0xff;
+                p[1] = (pixel >> 8) & 0xff;
+                p[2] = (pixel >> 16) & 0xff;
+            }
+        break;
+ 
+        case 4:/*couleur 32 bits*/
+            *(Uint32 *)p = pixel;
+        break;
+    }    
 }
 /*
  * Converts a RGB value into a Uint32, understandable by SDL
