@@ -14,11 +14,10 @@ GtkWidget* Actions;
 GtkWidget* DrawingArea;
 GtkWidget* Layout; 
 SDL_Surface* Surface;
-int Zoom = 50;
 
 // Resize the Surface to fit the app
 SDL_Surface* resize(SDL_Surface* image){
-    int target = 700;
+    int target = 500;
     int width = target;
     int height = target;
     if(image->w>image->h){
@@ -35,34 +34,28 @@ SDL_Surface* resize(SDL_Surface* image){
     SDL_FreeSurface(image);
     return res;
 }
+
 // Callback Functions
 void on_open(){
-    Zoom-=10;
     printf("Open Clicked\n");
-    gtk_widget_queue_draw(DrawingArea);
 }
 
 void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
-    double step = (double) 100/Zoom;
-    int fillSize = 1;
-    if(Zoom>100){
-        fillSize = Zoom/100;
-    }
     printf("on draw called\n");
     int width, height;
     Uint8 r,g,b;
     Uint32 C;
     width = Surface->w;
     height = Surface->h;
-    for(double x=0;x<width;x+=step){
-        for(double y=0;y<height;y+=step){
-            C = getPixel(Surface, (int) x, (int) y);
+    for(int x=0;x<width;x++){
+        for(int y=0;y<height;y++){
+            C = getPixel(Surface, x, y);
             SDL_GetRGB(C, Surface->format,&r, &g, &b);
             cairo_set_source_rgb(cr,
                     (double) r/(double) 255,
                     (double) g/(double) 255,
                     (double) b/(double) 255);
-            cairo_rectangle(cr, (int) x/step,(int) y/step, fillSize , fillSize);
+            cairo_rectangle(cr, x, y, 1 , 1);
             cairo_fill(cr);
         }
     }
@@ -102,9 +95,8 @@ int main(int argc, char **argv){
     DrawingArea = GTK_WIDGET(gtk_builder_get_object(builder,"DrawingArea"));    
     
     // Displaying the window
-    gtk_window_set_default_size(GTK_WINDOW(Window),
-            (int) ((double) (Surface->w)/((double) 100/(double) Zoom)),
-            (int) ((double) (Surface->h)/((double) 100/(double) Zoom))+20);
+    gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
+    gtk_window_set_resizable(Window, FALSE);    
     gtk_widget_show_all(Window);
     gtk_widget_show(Window);
 
