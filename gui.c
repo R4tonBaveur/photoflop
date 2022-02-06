@@ -28,7 +28,8 @@ SDL_Surface* resize(SDL_Surface* image){
     SDL_Surface* res = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
     for(int x=0;x<width;x++){
         for(int y=0;y<height;y++){
-            setPixel(res,x,y,getPixel(image,x*image->w/target,y*image->h/target));
+            setPixel(res,x,y,
+                    getPixel(image,x*image->w/target,y*image->h/target));
         }
     }
     SDL_FreeSurface(image);
