@@ -3,4 +3,6 @@
 !*.*
 !Makefile
 *.o
+*.glade~
 C-Utils/.git
+C-Utils/.gitignore
