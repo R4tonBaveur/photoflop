@@ -1,9 +1,7 @@
-#include <SDL2/SDL_events.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "get_coord.h"
+#include "grayscale.h"
+#include "image.h"
 
 void get_coord(SDL_Surface* image, size_t *x1, size_t *y1, size_t *x2, size_t *y2)
 {
@@ -38,6 +36,7 @@ void get_coord(SDL_Surface* image, size_t *x1, size_t *y1, size_t *x2, size_t *y
             {
                 *x2 = event.motion.x;
                 *y2 = event.motion.y;
+                grayscale(image, x1, y1, x2, y2);
             }
             printf("---------------------\n");
             printf("x1 = %zu\n", *x1);

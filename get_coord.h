@@ -1,5 +1,6 @@
-#include <SDL2/SDL.h>
 #include <stdlib.h>
+#include "grayscale.h"
+#include "image.h"
 #ifndef GET_COORD_H
 #define GET_COORD_H
 
