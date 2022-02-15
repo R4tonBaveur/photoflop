@@ -11,7 +11,7 @@ LDFLAGS=-fsanitize=address
 SRCGUI=gui.c
 SRCFILTERS=filters.c
 SRCSELECT=select.c
-SRCDRAW=draw.c random.c 
+SRCDRAW=drawrect.c random.c draw.c 
 SRCIMAGE=image.c
 OBJGUI = ${SRCGUI:%.c=%.o}
 OBJFILTERS = ${SRCFILTERS:%.c=%.o}
@@ -26,7 +26,7 @@ filters:${OBJFILTERS}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 select:${OBJSELECT}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
-draw:${OBJDRAW}  ${OBJIMAGE}
+draw:${OBJDRAW}  ${OBJIMAGE} 
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 clean:
 	${RM} ${OBJGUI} ${OBJFILTERS} ${OBJSELECT} ${OBJDRAW} gui filters select draw
