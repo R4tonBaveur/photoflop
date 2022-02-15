@@ -45,6 +45,7 @@ void print_stack(struct stack *Stack,void (*print)(void*)){
         Stack = Stack->next;
     }
     if(Stack!=NULL){
+        printf("  ");
         print(Stack->data);
         printf("\n");
     }
