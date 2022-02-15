@@ -30,4 +30,4 @@ select:${OBJSELECT}  ${OBJIMAGE}
 draw:${OBJDRAW}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 clean:
-	${RM} ${OBJGUI} ${OBJFILTERS} ${OBJSELECT} ${OBJDRAW} gui filters select draw
+	${RM} ${OBJIMAGE} ${OBJGUI} ${OBJFILTERS} ${OBJSELECT} ${OBJDRAW} gui filters select draw

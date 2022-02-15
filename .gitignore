@@ -4,5 +4,6 @@
 !Makefile
 *.o
 *.glade~
+*.swp
 C-Utils/.git
 C-Utils/.gitignore
