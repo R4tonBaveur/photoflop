@@ -1,4 +1,5 @@
-#include "grayscale.h"
+//#include "grayscale.h"
+#include "image.h"
 
 void turn_gray(SDL_Surface* image_surface)
 {
@@ -10,12 +11,12 @@ void turn_gray(SDL_Surface* image_surface)
     {
 	for(unsigned y = 0; y<height; y++)
 	{
-		Uint32 pixel = get_pixel(image_surface, x, y);
+		Uint32 pixel = getPixel(image_surface, x, y);
 		Uint8 r, g, b;
 		SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
 		Uint8 avg = 0.3*r+0.59*g+0.11*b;
 		pixel = SDL_MapRGB(image_surface->format, avg, avg, avg);
-		put_pixel(image_surface, x, y, pixel);
+		setPixel(image_surface, x, y, pixel);
 	}
     }
 

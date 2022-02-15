@@ -9,7 +9,7 @@ LDFLAGS=-fsanitize=address
 
 #FILES
 SRCGUI=gui.c
-SRCFILTERS=filters.c
+SRCFILTERS=filters.c grayscale.c
 SRCSELECT=select.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c
