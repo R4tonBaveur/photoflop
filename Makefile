@@ -11,7 +11,7 @@ LDFLAGS=-fsanitize=address
 SRCGUI=gui.c
 SRCFILTERS=filters.c
 SRCSELECT=select.c
-SRCDRAW=draw.c
+SRCDRAW=draw.c random.c drawline.c drawrectangle.c
 SRCIMAGE=image.c
 OBJGUI = ${SRCGUI:%.c=%.o}
 OBJFILTERS = ${SRCFILTERS:%.c=%.o}
