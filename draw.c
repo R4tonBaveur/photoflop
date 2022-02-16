@@ -35,9 +35,12 @@ int main(int argc, char **argv)
 		 SDL_RenderClear(renderer);
 
 		 //Draw
-		 SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); //Yellow
+		 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //Yellow
 		 //Draw points
-		 SDL_RenderDrawPoint(renderer,randomNumber(0, image->w), randomNumber(0,image->h));
+		 //SDL_RenderDrawPoint(renderer,randomNumber(0, image->w), randomNumber(0,image->h));
+		 //Draw rectangle 
+		 SDL_Rect rect = { 50, 50, 200, 200};
+		 SDL_RenderFillRect(renderer, &rect);
 
 		 //Show what was drawn 
 		 SDL_RenderPresent(renderer);
