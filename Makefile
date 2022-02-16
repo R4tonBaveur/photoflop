@@ -10,7 +10,7 @@ LDFLAGS=
 
 #FILES
 SRCGUI=gui.c
-SRCFILTERS=filters.c grayscale.c bicolor.c
+SRCFILTERS=filters.c grayscale.c bicolor.c dye.c
 SRCSELECT=select.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c

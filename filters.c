@@ -1,7 +1,7 @@
 #include "image.h"
 #include "grayscale.h"
 #include "bicolor.h"
-#include "expand.h"
+#include "dye.h"
 int main(){
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -13,7 +13,9 @@ int main(){
     image = loadImage("images/cat.jpg");
     bicolor(image,10);
     displaySurface(image);
-    //displaySurface(expand(loadImage("image/cat.jpg"),10));
+    image = loadImage("images/cat.jpg");
+    dye(image,0,0,1);
+    displaySurface(image);
     SDL_FreeSurface(image);
     return 0;
 }
