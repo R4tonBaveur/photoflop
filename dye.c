@@ -8,9 +8,9 @@ void dye(SDL_Surface* image,int r,int g,int b){
         for(int y=0;y<height;y++){
             p = getPixel(image,x,y);
             SDL_GetRGB(p,image->format,&red,&green,&blue);
-            red *= r;
-            green *= g;
-            blue *= b;
+            red *=(Uint8) r;
+            green *=(Uint8) g;
+            blue *= (Uint8) b;
             setPixel(image,x,y,RGBToUint32(image,red,green,blue));
         }
     }

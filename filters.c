@@ -14,7 +14,7 @@ int main(){
     bicolor(image,10);
     displaySurface(image);
     image = loadImage("images/cat.jpg");
-    dye(image,0,0,1);
+    dye(image,1,1,1);
     displaySurface(image);
     SDL_FreeSurface(image);
     return 0;
