@@ -1,16 +1,16 @@
 CC = gcc
 # Flags for the compilation
-CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -fsanitize=address -g -rdynamic
+CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -g -rdynamic
 # Libraries and path for linker
 LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image
 
 
 # Linkers (usually empty)
-LDFLAGS=-fsanitize=address
+LDFLAGS=
 
 #FILES
 SRCGUI=gui.c
-SRCFILTERS=filters.c grayscale.c
+SRCFILTERS=filters.c grayscale.c bicolor.c
 SRCSELECT=select.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c

@@ -1,6 +1,5 @@
-#include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
-#include "pixel_operations.h"
+#ifndef EXPAND_H
+#define EXPAND_H
 
 // Expands the image of a number of pixels on each side of the image
 /*
@@ -10,3 +9,4 @@
 	the function don't work when px_to_add>=length or width of img
 */
 SDL_Surface* expand(SDL_Surface *img, unsigned px_to_add);
+#endif

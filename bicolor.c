@@ -1,7 +1,4 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "pixel_operations.h"
-#include "display.h"
+#include "image.h"
 
 int mean(SDL_Surface* img, unsigned x, unsigned y, unsigned size)
 {
@@ -23,7 +20,7 @@ int mean(SDL_Surface* img, unsigned x, unsigned y, unsigned size)
     {
     	for(unsigned j = init_y; j<y+size && j<height; j++, num++)
 	{	
-   	    Uint32 pixel = get_pixel(img, i, j);
+   	    Uint32 pixel = getPixel(img, i, j);
     	    Uint8 color, null, nul;
     	    SDL_GetRGB(pixel, img->format, &color, &null, &nul);
 
@@ -46,7 +43,7 @@ void bicolor(SDL_Surface *img, unsigned blockSize)
     {
 	for(unsigned y = 0; y<height; y++)
 	{
-   	    Uint32 pixel = get_pixel(img, x, y);
+   	    Uint32 pixel = getPixel(img, x, y);
     	    Uint8 color, null, nul;
     	    SDL_GetRGB(pixel, img->format, &color, &null, &nul);
 	    
@@ -55,7 +52,7 @@ void bicolor(SDL_Surface *img, unsigned blockSize)
 	    else
 	        pixel = SDL_MapRGB(img->format, 0, 0, 0);
 
-	    put_pixel(img, x, y, pixel);
+	    setPixel(img, x, y, pixel);
         }
     }
     SDL_FreeSurface(tmp);    

@@ -1,7 +1,5 @@
-#include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
-#include "pixel_operations.h"
-#include "math.h"
+#include "image.h"
+#include <math.h>
 
 SDL_Surface* expand_surface(SDL_Surface *img, unsigned to_add)
 {
@@ -53,8 +51,8 @@ SDL_Surface* expand(SDL_Surface *img, unsigned px_to_add)
 					copy_x = ((int) x/w)*w;
 					copy_x = ((int) y/h)*h;
 					
-					Unint32 pixel = get_pixel(*img, copy_x, copy_y);
-					put_pixel(expanded_img, x, y, pixel);
+					Unint32 pixel = getPixel(*img, copy_x, copy_y);
+					setPixel(expanded_img, x, y, pixel);
 				}
 				else
 				{	
