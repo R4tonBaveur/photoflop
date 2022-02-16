@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS= -Wall -Wextra -std=c99 -O3 -fsanitize=address -g
+CFLAGS= -Wall -Wextra -std=c99 -O3 -g
 
 # Libraries and path for linker
 LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image -lSDL2
 
 # Linkers (usually empty)
-LDFLAGS=-fsanitize=address
+LDFLAGS=
 
 #FILES
 SRCGUI=gui.c
