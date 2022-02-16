@@ -1,12 +1,12 @@
 CC = gcc
 # Flags for the compilation
-CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -fsanitize=address -g -rdynamic
+CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -g -rdynamic
 # Libraries and path for linker
 LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image
 
 
 # Linkers (usually empty)
-LDFLAGS=-fsanitize=address
+LDFLAGS=
 
 #FILES
 SRCGUI=gui.c
@@ -30,4 +30,4 @@ select:${OBJSELECT}  ${OBJIMAGE}
 draw:${OBJDRAW}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 clean:
-	${RM} ${OBJIMAGE} ${OBJGUI} ${OBJFILTERS} ${OBJSELECT} ${OBJDRAW} gui filters select draw
+	${RM} *.o gui filters select draw

@@ -13,7 +13,9 @@ GtkWidget* Drawing;
 GtkWidget* Actions;
 GtkWidget* DrawingArea;
 GtkWidget* Layout; 
+GtkWidget* GrayScale;
 SDL_Surface* Surface;
+
 
 // Resize the Surface to fit the app
 SDL_Surface* resize(SDL_Surface* image){
@@ -40,7 +42,25 @@ SDL_Surface* resize(SDL_Surface* image){
 void on_open(){
     printf("Open Clicked\n");
 }
-
+void on_GrayScale(){
+    /*
+     * Needs to be replaced by importing filter
+     */
+    int width = Surface->w;
+    int height = Surface->h;
+    Uint32 p;
+    Uint8 r,g,b,avg;
+    for(int x=0;x<width;x++){
+        for(int y=0;y<height;y++){
+            p = getPixel(Surface,x,y);
+            SDL_GetRGB(p,Surface->format,&r,&g,&b);
+            avg = 0.3*r + 0.59*g + 0.11*b;
+            p = SDL_MapRGB(Surface->format,avg,avg,avg);
+            setPixel(Surface, x, y,p);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
+}
 void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
     printf("on draw called\n");
     int width, height;
@@ -94,7 +114,8 @@ int main(int argc, char **argv){
     Drawing = GTK_WIDGET(gtk_builder_get_object(builder,"Drawing"));
     Actions = GTK_WIDGET(gtk_builder_get_object(builder,"Actions"));
     DrawingArea = GTK_WIDGET(gtk_builder_get_object(builder,"DrawingArea"));    
-    
+    GrayScale = GTK_WIDGET(gtk_builder_get_object(builder,"GrayScale"));
+
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
     gtk_window_set_resizable(Window, FALSE);    
@@ -106,6 +127,7 @@ int main(int argc, char **argv){
     g_signal_connect(Window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(Open,"activate", G_CALLBACK(on_open), NULL);
     g_signal_connect(DrawingArea,"draw", G_CALLBACK(on_draw), NULL);
+    g_signal_connect(GrayScale,"activate", G_CALLBACK(on_GrayScale), NULL);
 
 
     // Runs the main loop.
