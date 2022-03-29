@@ -54,7 +54,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="Open">
+                      <object class="GtkImageMenuItem" id="OpenButton">
                         <property name="label">Open</property>
                         <property name="name">Open</property>
                         <property name="visible">True</property>
@@ -64,7 +64,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="Save">
+                      <object class="GtkImageMenuItem" id="SaveButton">
                         <property name="label">Save</property>
                         <property name="name">Open</property>
                         <property name="visible">True</property>
@@ -87,7 +87,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="Rectangle">
+                      <object class="GtkImageMenuItem" id="RectangleButton">
                         <property name="label">Rectangle</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -109,7 +109,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="GrayScale">
+                      <object class="GtkImageMenuItem" id="GrayScaleButton">
                         <property name="label">GrayScale</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -131,7 +131,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="Square">
+                      <object class="GtkImageMenuItem" id="SquareButton">
                         <property name="label">Square</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -153,7 +153,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="GoBack">
+                      <object class="GtkImageMenuItem" id="GoBackButton">
                         <property name="label">GoBack</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>

@@ -3,22 +3,29 @@
 #include <stdlib.h>
 #include "image.h"
 #include "C-Utils/stack/stack.h"
+#include "filters/grayscale.h"
 
 // GTK items
 GtkWidget* Window;
 GtkWidget* MenuBar;
-GtkWidget* Open;
 GtkWidget* Selection;
 GtkWidget* Filters;
 GtkWidget* Drawing;
 GtkWidget* Actions;
 GtkWidget* DrawingArea;
 GtkWidget* Layout; 
-GtkWidget* GrayScale;
-GtkWidget* GoBack;
+GtkWidget* GrayScaleButton;
+GtkWidget* GoBackButton;
+GtkWidget* OpenButton;
 SDL_Surface* Surface;
+SDL_Surface* SelectionZone;
 struct stack* SurfaceStack;
 
+// Other functions
+void UpdateImage(SDL_Surface* newImage){
+    Surface = newImage;
+    push(SurfaceStack,newImage);
+}
 
 // Resize the Surface to fit the app
 SDL_Surface* resize(SDL_Surface* image){
@@ -71,12 +78,11 @@ void on_GoBack(){
     printf("go back\n");
     pop(SurfaceStack);
     Surface = pop(SurfaceStack);
+    gtk_widget_queue_draw(DrawingArea);
 }
 
-// Other functions
-void UpdateImage(SDL_Surface* newImage){
-    Surface = newImage;
-    push(SurfaceStack,newImage);
+void on_GrayScale(){
+    UpdateImage(GrayScale(Surface,SelectionZone));
 }
 
 // Main function
@@ -93,6 +99,17 @@ int main(int argc, char **argv){
         g_clear_error(&error);
         return 1;
     }
+    printf("builder added from file\n");
+    // The zone image
+    SelectionZone = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
+    printf("selection zone allocated");
+    for(int x=0;x<SelectionZone->w;x++){
+        for(int y=0;y<SelectionZone->h;y++){
+            setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
+        }
+    }
+    printf("zone image initialized\n");
+
     // The image
     Surface = resize(loadImage("images/cat.jpg"));
     if(Surface==NULL){
@@ -107,15 +124,15 @@ int main(int argc, char **argv){
     // Getting the different components from the builder
     Window = GTK_WINDOW(gtk_builder_get_object(builder, "Window"));
     MenuBar = GTK_WIDGET(gtk_builder_get_object(builder,"MenuBar"));
-    Open = GTK_WIDGET(gtk_builder_get_object(builder,"Open"));
+    OpenButton = GTK_WIDGET(gtk_builder_get_object(builder,"OpenButton"));
     Layout = GTK_WIDGET(gtk_builder_get_object(builder,"BoxLayout"));
     Selection = GTK_WIDGET(gtk_builder_get_object(builder,"Selection"));
     Filters = GTK_WIDGET(gtk_builder_get_object(builder,"Filters"));
     Drawing = GTK_WIDGET(gtk_builder_get_object(builder,"Drawing"));
     Actions = GTK_WIDGET(gtk_builder_get_object(builder,"Actions"));
     DrawingArea = GTK_WIDGET(gtk_builder_get_object(builder,"DrawingArea"));    
-    GrayScale = GTK_WIDGET(gtk_builder_get_object(builder,"GrayScale"));
-    GoBack = GTK_WIDGET(gtk_builder_get_object(builder,"GoBack"));
+    GrayScaleButton = GTK_WIDGET(gtk_builder_get_object(builder,"GrayScaleButton"));
+    GoBackButton = GTK_WIDGET(gtk_builder_get_object(builder,"GoBackButton"));
 
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
@@ -126,14 +143,15 @@ int main(int argc, char **argv){
     
     // Connecting the signals
     g_signal_connect(Window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    g_signal_connect(Open,"activate", G_CALLBACK(on_open), NULL);
+    g_signal_connect(OpenButton,"activate", G_CALLBACK(on_open), NULL);
     g_signal_connect(DrawingArea,"draw", G_CALLBACK(on_draw), NULL);
-    g_signal_connect(GoBack,"activate",G_CALLBACK(on_GoBack), NULL);
+    g_signal_connect(GoBackButton,"activate",G_CALLBACK(on_GoBack), NULL);
+    g_signal_connect(GrayScaleButton,"activate",G_CALLBACK(on_GrayScale), NULL);
 
     // Runs the main loop.
     gtk_main();
     gtk_widget_destroy(Window);
-    gtk_widget_destroy(Open);
+    gtk_widget_destroy(OpenButton);
     gtk_widget_destroy(MenuBar);
     // Exits.
     return 0;

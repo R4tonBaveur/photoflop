@@ -10,7 +10,7 @@ LDFLAGS=
 
 #FILES
 SRCGUI = gui.c
-SRCFILTERS = filters.c
+SRCFILTERS = filters/grayscale.c
 SRCSELECT = select.c
 SRCDRAW = draw.c
 SRCIMAGE = image.c
@@ -23,7 +23,7 @@ OBJIMAGE = ${SRCIMAGE:%.c=%.o}
 OBJUTILS = ${SRCUTILS:%.c=%.o}
 
 #RULES
-gui:${OBJGUI} ${OBJIMAGE} ${OBJUTILS}
+gui:${OBJGUI} ${OBJIMAGE} ${OBJUTILS} ${OBJFILTERS}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 filters:${OBJFILTERS}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
