@@ -23,8 +23,10 @@ struct stack* SurfaceStack;
 
 // Other functions
 void UpdateImage(SDL_Surface* newImage){
+    printf("Updating image\n");
     Surface = newImage;
     push(SurfaceStack,newImage);
+    gtk_widget_queue_draw(DrawingArea);
 }
 
 // Resize the Surface to fit the app
@@ -76,12 +78,13 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
 
 void on_GoBack(){
     printf("go back\n");
-    pop(SurfaceStack);
-    Surface = pop(SurfaceStack);
+    //pop(SurfaceStack);
+    Surface = pop(SurfaceStack)->data;
     gtk_widget_queue_draw(DrawingArea);
 }
 
 void on_GrayScale(){
+    printf("GreyScale called\n");
     UpdateImage(GrayScale(Surface,SelectionZone));
 }
 
@@ -99,7 +102,14 @@ int main(int argc, char **argv){
         g_clear_error(&error);
         return 1;
     }
-    printf("builder added from file\n");
+
+    // The image
+    Surface = resize(loadImage("images/cat.jpg"));
+    if(Surface==NULL){
+        printf("Error while loading surface\n");
+        return 1;
+    }
+
     // The zone image
     SelectionZone = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
     printf("selection zone allocated");
@@ -107,14 +117,6 @@ int main(int argc, char **argv){
         for(int y=0;y<SelectionZone->h;y++){
             setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
         }
-    }
-    printf("zone image initialized\n");
-
-    // The image
-    Surface = resize(loadImage("images/cat.jpg"));
-    if(Surface==NULL){
-        printf("Error while loading surface\n");
-        return 1;
     }
 
     // The stack
