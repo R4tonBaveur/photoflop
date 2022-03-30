@@ -36,7 +36,6 @@ void get_coord(SDL_Surface* image, size_t *x1, size_t *y1, size_t *x2, size_t *y
             {
                 *x2 = event.motion.x;
                 *y2 = event.motion.y;
-                grayscale(image, x1, y1, x2, y2);
             }
             printf("---------------------\n");
             printf("x1 = %zu\n", *x1);

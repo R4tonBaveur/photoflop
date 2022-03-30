@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "image.h"
 #include "get_coord.h"
+#include "circle_select.h"
+#include "sepia.h"
 
 int main()
 {
@@ -12,8 +14,12 @@ int main()
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Surface* image = loadImage("./images/cat.jpg");
     get_coord(image, &x1, &y1, &x2, &y2);
-    displaySurface(image);
+    //circle_select(image, &x1, &y1, 290);
+    SDL_Surface* new = sepia(image, &x1, &y1, &x2, &y2);
+    displaySurface(new);
+    
     SDL_FreeSurface(image);
+    SDL_FreeSurface(new);
     SDL_Quit();
     return 0;
 }
