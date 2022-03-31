@@ -10,7 +10,7 @@ LDFLAGS=
 #FILES
 SRCGUI=gui.c
 SRCFILTERS=filters.c
-SRCSELECT=select.c get_coord.c grayscale.c circle_select.c sepia.c
+SRCSELECT=select.c get_coord.c grayscale.c circle_select.c sepia.c correct.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c
 OBJGUI = ${SRCGUI:%.c=%.o}
