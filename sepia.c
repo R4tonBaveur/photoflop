@@ -5,7 +5,7 @@ SDL_Surface* sepia(SDL_Surface* image_surface, size_t *x1, size_t *y1, size_t *x
 {
     //SDL_Surface* res = SDL_CreateRGBSurface(0, image_surface->w, image_surface->h,32,0,0,0,0);
     SDL_Surface* res = image_surface;
-    for(size_t x = *x1; x < *x2; x++)
+    for(size_t x = *x1; x <= *x2; x++)
     {
         for(size_t y = *y1; y < *y2; y++)
         {

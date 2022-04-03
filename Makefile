@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS= -Wall -Wextra -std=c99 -O3 -g
 
 # Libraries and path for linker
-LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image -lSDL2
+LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image -lSDL2 -lm
 
 # Linkers (usually empty)
 LDFLAGS=
@@ -10,7 +10,7 @@ LDFLAGS=
 #FILES
 SRCGUI=gui.c
 SRCFILTERS=filters.c
-SRCSELECT=select.c get_coord.c grayscale.c circle_select.c sepia.c correct.c
+SRCSELECT=select.c get_coord.c grayscale.c circle_select.c sepia.c correct.c brightness.c
 SRCDRAW=draw.c
 SRCIMAGE=image.c
 OBJGUI = ${SRCGUI:%.c=%.o}
