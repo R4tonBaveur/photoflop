@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include "image.h"
 #include "C-Utils/stack/stack.h"
-#include "filters/grayscale.h"
+#include <stdlib.h>
+#include <math.h>
 
 // GTK items
 GtkWidget* Window;
@@ -15,19 +16,14 @@ GtkWidget* Actions;
 GtkWidget* DrawingArea;
 GtkWidget* Layout; 
 GtkWidget* GrayScaleButton;
+GtkWidget* SepiaButton;
+GtkWidget* DarknessButton;
+GtkWidget* BrightnessButton;
 GtkWidget* GoBackButton;
 GtkWidget* OpenButton;
 SDL_Surface* Surface;
 SDL_Surface* SelectionZone;
-struct stack* SurfaceStack;
-
-// Other functions
-void UpdateImage(SDL_Surface* newImage){
-    printf("Updating image\n");
-    Surface = newImage;
-    push(SurfaceStack,newImage);
-    gtk_widget_queue_draw(DrawingArea);
-}
+int SurfaceVersion;
 
 // Resize the Surface to fit the app
 SDL_Surface* resize(SDL_Surface* image){
@@ -54,8 +50,15 @@ SDL_Surface* resize(SDL_Surface* image){
 void on_open(){
     printf("Open Clicked\n");
 }
-void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
+
+void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data){
     printf("on draw called\n");
+    if(Surface)
+        printf("Surface initialized\n");
+    else{
+        printf("No Surface");
+        return;
+    }
     int width, height;
     Uint8 r,g,b;
     Uint32 C;
@@ -78,18 +81,89 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data) {
 
 void on_GoBack(){
     printf("go back\n");
-    //pop(SurfaceStack);
-    Surface = pop(SurfaceStack)->data;
+    char path[64];
+    SurfaceVersion--;
+    printf("1\n");
+    sprintf(path,"%d.jpg\0",SurfaceVersion);
+    printf("%s\n",path);
+    Surface = IMG_Load(path);
+    printf("3%d\n",Surface->w);
     gtk_widget_queue_draw(DrawingArea);
+    printf("4\n");
 }
 
 void on_GrayScale(){
-    printf("GreyScale called\n");
-    UpdateImage(GrayScale(Surface,SelectionZone));
+    int width = Surface->w;
+    int height = Surface->h;
+    for(int x = 0; x<width; x++)
+    {
+        for(int y = 0; y<height; y++)
+        {
+            Uint32 pixel = getPixel(Surface, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
+            Uint8 avg = 0.3*r+0.59*g+0.11*b;
+            pixel = SDL_MapRGB(Surface->format, avg, avg, avg);
+                setPixel(Surface, x, y, pixel);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
 }
 
+void on_Sepia(){
+    for(int x = 100; x < Surface->w-200; x++)
+    {
+        for(int y = 300; y < Surface->h-30; y++)
+        {
+            Uint32 pixel = getPixel(Surface, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
+            pixel = SDL_MapRGB(Surface->format, r * 0.393 + g * 0.769 + b * 0.189, r * 0.349 + g * 0.686 + b * 0.168, r * 0.272 + g * 0.534 + b * 0.131);
+            setPixel(Surface, x, y, pixel);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
+
+}
+
+void on_Darkness(){
+    int n = 5;
+    for(size_t x = 0; x < Surface->w; x++)
+    {
+        for(size_t y = 0; y < Surface->h; y++)
+        {
+            Uint32 pixel = getPixel(Surface, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
+            pixel = SDL_MapRGB(Surface->format, (int) (255 * pow((double) r/255, n)), (int) (255 * pow((double) g/255, n)), (int) (255 * pow((double) b/255, n)));
+            setPixel(Surface, x, y, pixel);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
+}
+
+void on_Brightness(){
+    float n = 0.5f;
+    for(size_t x = 0; x < Surface->w; x++)
+    {
+        for(size_t y = 0; y < Surface->h; y++)
+        {
+            Uint32 pixel = getPixel(Surface, x, y);
+            Uint8 r, g, b;
+            SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
+            pixel = SDL_MapRGB(Surface->format, (int) (255 * pow((double) r/255, n)), (int) (255 * pow((double) g/255, n)), (int) (255 * pow((double) b/255, n)));
+            setPixel(Surface, x, y, pixel);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
+}
+
+void print_int(void* val){
+    int * p = val;
+    printf("%d",*p);
+}
 // Main function
-int main(int argc, char **argv){
+int main(/*int argc, char **argv*/){
     // Initializes GTK
     gtk_init(NULL, NULL);
 
@@ -109,20 +183,16 @@ int main(int argc, char **argv){
         printf("Error while loading surface\n");
         return 1;
     }
-
+    SurfaceVersion = 0;
     // The zone image
     SelectionZone = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
-    printf("selection zone allocated");
+    printf("selection zone allocated\n");
     for(int x=0;x<SelectionZone->w;x++){
         for(int y=0;y<SelectionZone->h;y++){
             setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
         }
     }
-
-    // The stack
-    SurfaceStack = new_stack();
-    push(SurfaceStack,&Surface);
-
+    
     // Getting the different components from the builder
     Window = GTK_WINDOW(gtk_builder_get_object(builder, "Window"));
     MenuBar = GTK_WIDGET(gtk_builder_get_object(builder,"MenuBar"));
@@ -134,6 +204,9 @@ int main(int argc, char **argv){
     Actions = GTK_WIDGET(gtk_builder_get_object(builder,"Actions"));
     DrawingArea = GTK_WIDGET(gtk_builder_get_object(builder,"DrawingArea"));    
     GrayScaleButton = GTK_WIDGET(gtk_builder_get_object(builder,"GrayScaleButton"));
+    SepiaButton = GTK_WIDGET(gtk_builder_get_object(builder,"SepiaButton"));
+    DarknessButton = GTK_WIDGET(gtk_builder_get_object(builder,"DarknessButton"));
+    BrightnessButton = GTK_WIDGET(gtk_builder_get_object(builder,"BrightnessButton"));
     GoBackButton = GTK_WIDGET(gtk_builder_get_object(builder,"GoBackButton"));
 
     // Displaying the window
@@ -149,6 +222,9 @@ int main(int argc, char **argv){
     g_signal_connect(DrawingArea,"draw", G_CALLBACK(on_draw), NULL);
     g_signal_connect(GoBackButton,"activate",G_CALLBACK(on_GoBack), NULL);
     g_signal_connect(GrayScaleButton,"activate",G_CALLBACK(on_GrayScale), NULL);
+    g_signal_connect(SepiaButton,"activate",G_CALLBACK(on_Sepia), NULL);
+    g_signal_connect(DarknessButton,"activate",G_CALLBACK(on_Darkness), NULL);
+    g_signal_connect(BrightnessButton,"activate",G_CALLBACK(on_Brightness), NULL);
 
     // Runs the main loop.
     gtk_main();

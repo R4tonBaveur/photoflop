@@ -1,8 +1,8 @@
 CC = gcc
 # Flags for the compilation
-CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -g -rdynamic
+CFLAGS= `pkg-config --cflags sdl2 gtk+-3.0` -lSDL2_image -Wall -Wextra -std=c99 -O3 -g -rdynamic -lm
 # Libraries and path for linker
-LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image
+LDLIBS= `pkg-config --libs sdl2 gtk+-3.0` -lSDL2_image -lm
 
 
 # Linkers (usually empty)
@@ -10,7 +10,7 @@ LDFLAGS=
 
 #FILES
 SRCGUI = gui.c
-SRCFILTERS = filters/grayscale.c
+SRCFILTERS = filters.c
 SRCSELECT = select.c
 SRCDRAW = draw.c
 SRCIMAGE = image.c
@@ -23,7 +23,7 @@ OBJIMAGE = ${SRCIMAGE:%.c=%.o}
 OBJUTILS = ${SRCUTILS:%.c=%.o}
 
 #RULES
-gui:${OBJGUI} ${OBJIMAGE} ${OBJUTILS} ${OBJFILTERS}
+gui:${OBJGUI} ${OBJIMAGE} ${OBJUTILS}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 filters:${OBJFILTERS}  ${OBJIMAGE}
 	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
