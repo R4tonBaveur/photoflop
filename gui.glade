@@ -22,6 +22,11 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
+  <object class="GtkImage" id="GreyScaleImage4">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
   <object class="GtkImage" id="OpenImage">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -156,6 +161,15 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="image">GreyScaleImage3</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="BlurButton">
+                        <property name="label">Blur</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">GreyScaleImage4</property>
                         <property name="use-stock">False</property>
                       </object>
                     </child>

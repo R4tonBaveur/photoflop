@@ -19,6 +19,7 @@ GtkWidget* GrayScaleButton;
 GtkWidget* SepiaButton;
 GtkWidget* DarknessButton;
 GtkWidget* BrightnessButton;
+GtkWidget* BlurButton;
 GtkWidget* GoBackButton;
 GtkWidget* OpenButton;
 SDL_Surface* Surface;
@@ -158,6 +159,39 @@ void on_Brightness(){
     gtk_widget_queue_draw(DrawingArea);
 }
 
+void on_Blur(){
+    SDL_Surface* image = Surface;
+    int precision = 2;
+    Uint32 matrix[image->w][image->h];
+    for(int x=0;x<image->w;x++){
+        for(int y=0;y<image->h;y++){
+            Uint32 totalPixels = 0;
+            Uint32 colorSum = 0;
+            for(int xShift=-precision;xShift<precision;xShift++){
+                for(int yShift=-precision;yShift<precision;yShift++){
+                    if(x+xShift>=0&&x+xShift<image->w&&y+yShift>=0&&y+yShift<image->h){
+                        totalPixels++;
+                        uint8_t val;
+                        SDL_GetRGB(getPixel(image,xShift+x,yShift+y), image->format, &val, &val, &val);
+                        colorSum+=val;
+                    }
+                }
+            }
+            Uint32 grey = colorSum/totalPixels;
+            uint8_t val;
+            SDL_GetRGB(getPixel(image,x,y), image->format, &val, &val, &val);
+            matrix[x][y] = RGBToUint32(image,grey,grey,grey);
+        }
+    }
+    for(int x=0;x<image->w;x++){
+        for(int y=0;y<image->h;y++){
+            setPixel(image,x,y,matrix[x][y]);
+        }
+    }
+    gtk_widget_queue_draw(DrawingArea);
+}
+
+
 void print_int(void* val){
     int * p = val;
     printf("%d",*p);
@@ -208,6 +242,7 @@ int main(/*int argc, char **argv*/){
     DarknessButton = GTK_WIDGET(gtk_builder_get_object(builder,"DarknessButton"));
     BrightnessButton = GTK_WIDGET(gtk_builder_get_object(builder,"BrightnessButton"));
     GoBackButton = GTK_WIDGET(gtk_builder_get_object(builder,"GoBackButton"));
+    BlurButton = GTK_WIDGET(gtk_builder_get_object(builder,"BlurButton"));
 
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
@@ -225,6 +260,7 @@ int main(/*int argc, char **argv*/){
     g_signal_connect(SepiaButton,"activate",G_CALLBACK(on_Sepia), NULL);
     g_signal_connect(DarknessButton,"activate",G_CALLBACK(on_Darkness), NULL);
     g_signal_connect(BrightnessButton,"activate",G_CALLBACK(on_Brightness), NULL);
+    g_signal_connect(BlurButton,"activate",G_CALLBACK(on_Blur), NULL);
 
     // Runs the main loop.
     gtk_main();
