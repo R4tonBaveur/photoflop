@@ -37,6 +37,16 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
+  <object class="GtkImage" id="RectangleImage1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="RectangleImage2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
   <object class="GtkImage" id="SquareImage">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -97,6 +107,24 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="image">RectangleImage</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="AllButton">
+                        <property name="label">All</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">RectangleImage1</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="CircleButton">
+                        <property name="label">Circle</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">RectangleImage2</property>
                         <property name="use-stock">False</property>
                       </object>
                     </child>

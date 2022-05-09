@@ -26,6 +26,9 @@ GtkWidget* BlurButton;
 GtkWidget* GoBackButton;
 GtkWidget* SaveButton;
 GtkWidget* RectangleButton;
+GtkWidget* CircleButton;
+GtkWidget* AllButton;
+GtkWidget* FileName;
 struct SStack* s;
 SDL_Surface* Surface;
 SDL_Surface* SelectionZone;
@@ -153,20 +156,20 @@ void on_GrayScale(){
 }
 
 void on_Sepia(){
-    for(int x = 100; x < Surface->w-200; x++)
+    for(int x = 0; x < Surface->w; x++)
     {
-        for(int y = 300; y < Surface->h-30; y++)
+        for(int y = 0; y < Surface->h; y++)
         {
             Uint32 pixel = getPixel(Surface, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
             pixel = SDL_MapRGB(Surface->format, r * 0.393 + g * 0.769 + b * 0.189, r * 0.349 + g * 0.686 + b * 0.168, r * 0.272 + g * 0.534 + b * 0.131);
-            setPixel(Surface, x, y, pixel);
+            if(getPixel(SelectionZone,x,y))
+                setPixel(Surface, x, y, pixel);
         }
     }
     update();
     gtk_widget_queue_draw(DrawingArea);
-
 }
 
 void on_Darkness(){
@@ -179,7 +182,8 @@ void on_Darkness(){
             Uint8 r, g, b;
             SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
             pixel = SDL_MapRGB(Surface->format, (int) (255 * pow((double) r/255, n)), (int) (255 * pow((double) g/255, n)), (int) (255 * pow((double) b/255, n)));
-            setPixel(Surface, x, y, pixel);
+            if(getPixel(SelectionZone,x,y))
+                setPixel(Surface, x, y, pixel);
         }
     }
     update();
@@ -196,7 +200,8 @@ void on_Brightness(){
             Uint8 r, g, b;
             SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
             pixel = SDL_MapRGB(Surface->format, (int) (255 * pow((double) r/255, n)), (int) (255 * pow((double) g/255, n)), (int) (255 * pow((double) b/255, n)));
-            setPixel(Surface, x, y, pixel);
+            if(getPixel(SelectionZone,x,y))
+                setPixel(Surface, x, y, pixel);
         }
     }
     update();
@@ -210,26 +215,31 @@ void on_Blur(){
     for(int x=0;x<image->w;x++){
         for(int y=0;y<image->h;y++){
             Uint32 totalPixels = 0;
-            Uint32 colorSum = 0;
+            Uint32 RSum = 0;
+            Uint32 GSum = 0;
+            Uint32 BSum = 0;
             for(int xShift=-precision;xShift<precision;xShift++){
                 for(int yShift=-precision;yShift<precision;yShift++){
                     if(x+xShift>=0&&x+xShift<image->w&&y+yShift>=0&&y+yShift<image->h){
                         totalPixels++;
-                        uint8_t val;
-                        SDL_GetRGB(getPixel(image,xShift+x,yShift+y), image->format, &val, &val, &val);
-                        colorSum+=val;
+                        uint8_t r,g,b;
+                        SDL_GetRGB(getPixel(image,xShift+x,yShift+y), image->format, &r, &g, &b);
+                        RSum+=r;
+                        GSum+=g;
+                        BSum+=b;
                     }
                 }
             }
-            Uint32 grey = colorSum/totalPixels;
-            uint8_t val;
-            SDL_GetRGB(getPixel(image,x,y), image->format, &val, &val, &val);
-            matrix[x][y] = RGBToUint32(image,grey,grey,grey);
+            Uint32 R = RSum/totalPixels;
+            Uint32 G = GSum/totalPixels;
+            Uint32 B = BSum/totalPixels;
+            matrix[x][y] = RGBToUint32(image,R,G,B);
         }
     }
     for(int x=0;x<image->w;x++){
         for(int y=0;y<image->h;y++){
-            setPixel(image,x,y,matrix[x][y]);
+            if(getPixel(SelectionZone,x,y))
+                setPixel(image,x,y,matrix[x][y]);
         }
     }
     update();
@@ -269,7 +279,41 @@ void on_Rectangle(){
             }
         }
     }
+    //displaySurface(SelectionZone);
 }
+
+void on_Circle(){
+    size_t xCenter,yCenter,xRadius,yRadius;
+    get_coord(Surface,&xCenter,&yCenter);
+    get_coord(Surface,&xRadius,&yRadius);
+    for(int x=0;x<SelectionZone->w;x++){
+        for(int y=0;y<SelectionZone->h;y++){
+            setPixel(SelectionZone,x,y,0);
+        }
+    }
+    size_t radius = sqrt((xCenter-xRadius)*(xCenter-xRadius)+(yCenter-yRadius)*(yCenter-yRadius));
+    for(int x=xCenter-radius;x<SelectionZone->w;x++){
+        for(int y=yCenter-radius;y<SelectionZone->h;y++){
+            if(x>=0 && x<xCenter+radius && y>=0 && y<yCenter+radius){
+                if(sqrt((x - xCenter) * (x - xCenter) + (y - yCenter) * (y - yCenter))<=radius){
+                    setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
+                } else {
+                    setPixel(SelectionZone,x,y,0);
+                }
+            }
+        }
+    }
+    //displaySurface(SelectionZone);
+}
+
+void on_All(){
+    for(int x=0;x<SelectionZone->w;x++){
+        for(int y=0;y<SelectionZone->h;y++){
+            setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
+        }
+    }
+}
+
 // Main function
 int main(int argc, char **argv){
     if(argc<2){
@@ -327,6 +371,10 @@ int main(int argc, char **argv){
     GoBackButton = GTK_WIDGET(gtk_builder_get_object(builder,"GoBackButton"));
     BlurButton = GTK_WIDGET(gtk_builder_get_object(builder,"BlurButton"));
     RectangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"RectangleButton"));
+    CircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"CircleButton"));
+    AllButton = GTK_WIDGET(gtk_builder_get_object(builder,"AllButton"));
+    FileName = GTK_WIDGET(gtk_builder_get_object(builder,"FileName"));
+
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
     gtk_window_set_resizable(Window, FALSE);    
@@ -345,6 +393,9 @@ int main(int argc, char **argv){
     g_signal_connect(BrightnessButton,"activate",G_CALLBACK(on_Brightness), NULL);
     g_signal_connect(BlurButton,"activate",G_CALLBACK(on_Blur), NULL);
     g_signal_connect(RectangleButton,"activate",G_CALLBACK(on_Rectangle), NULL);
+    g_signal_connect(CircleButton,"activate",G_CALLBACK(on_Circle), NULL);
+    g_signal_connect(AllButton,"activate",G_CALLBACK(on_All), NULL);
+    gtk_label_set_text(GTK_LABEL (FileName), filename);
 
     // Runs the main loop.
     gtk_main();
