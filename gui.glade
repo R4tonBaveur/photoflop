@@ -27,11 +27,6 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
-  <object class="GtkImage" id="OpenImage">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
   <object class="GtkImage" id="OpenImage1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -73,16 +68,6 @@
                   <object class="GtkMenu" id="FileSubMenu">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <child>
-                      <object class="GtkImageMenuItem" id="OpenButton">
-                        <property name="label">Open</property>
-                        <property name="name">Open</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="image">OpenImage</property>
-                        <property name="use-stock">False</property>
-                      </object>
-                    </child>
                     <child>
                       <object class="GtkImageMenuItem" id="SaveButton">
                         <property name="label">Save</property>
