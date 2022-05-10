@@ -26,6 +26,7 @@ GtkWidget* SaveButton;
 GtkWidget* RectangleButton;
 GtkWidget* CircleButton;
 GtkWidget* AllButton;
+GtkWidget* ColorButton;
 GtkWidget* DrawCircleButton;
 GtkWidget* DrawDiamondButton;
 GtkWidget* DrawHexagoneButton;
@@ -51,7 +52,6 @@ char* filename;
 // get coordonates of a clic
 void get_coord(SDL_Surface* image, size_t *x, size_t *y)
 {
-    static int counter = 0;
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window * window = SDL_CreateWindow("Photoflop",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, image->w, image->h, 0);
@@ -185,6 +185,7 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data){
 }
 
 void on_GoBack(){
+    free(s->surface);
     s = s->old;
     Surface = s->surface;
     gtk_widget_queue_draw(DrawingArea);
@@ -372,6 +373,25 @@ void on_All(){
         }
     }
 }
+int absolute(int x){
+    if(x<0)
+        return -x;
+    return x;
+}
+void on_Color(){
+    size_t x1,y1;
+    get_coord(Surface,&x1,&y1);
+    Uint32 c = getPixel(Surface,x1,y1);
+    for(int x=0;x<Surface->w;x++){
+        for(int y=0;y<Surface->h;y++){
+            if(getPixel(Surface,x,y) == c){
+                setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
+            } else {
+                setPixel(SelectionZone,x,y,0);
+            }
+        }
+    }
+}
 
 void on_DrawCircle(){
     drawShape("drawings/circle.png");
@@ -480,6 +500,7 @@ int main(int argc, char **argv){
     RectangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"RectangleButton"));
     CircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"CircleButton"));
     AllButton = GTK_WIDGET(gtk_builder_get_object(builder,"AllButton"));
+    ColorButton = GTK_WIDGET(gtk_builder_get_object(builder,"ColorButton"));
     FileName = GTK_WIDGET(gtk_builder_get_object(builder,"FileName"));
     DrawCircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawCircleButton"));
     DrawDiamondButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawDiamondButton"));
@@ -510,6 +531,7 @@ int main(int argc, char **argv){
     g_signal_connect(RectangleButton,"activate",G_CALLBACK(on_Rectangle), NULL);
     g_signal_connect(CircleButton,"activate",G_CALLBACK(on_Circle), NULL);
     g_signal_connect(AllButton,"activate",G_CALLBACK(on_All), NULL);
+    g_signal_connect(ColorButton,"activate",G_CALLBACK(on_Color), NULL);
     g_signal_connect(DrawCircleButton,"activate",G_CALLBACK(on_DrawCircle), NULL);
     g_signal_connect(DrawDiamondButton,"activate",G_CALLBACK(on_DrawDiamond), NULL);
     g_signal_connect(DrawHexagoneButton,"activate",G_CALLBACK(on_DrawHexagone), NULL);
@@ -519,7 +541,7 @@ int main(int argc, char **argv){
     g_signal_connect(DrawThunderButton,"activate",G_CALLBACK(on_DrawThunder), NULL);
     g_signal_connect(DrawTriangleButton,"activate",G_CALLBACK(on_DrawTriangle), NULL);
     g_signal_connect(DrawRectangleButton,"activate",G_CALLBACK(on_DrawRectangle), NULL);
-    gtk_label_set_text(GTK_LABEL (FileName), filename);
+    gtk_label_set_text(GTK_LABEL(FileName), filename);
 
     // Runs the main loop.
     gtk_main();

@@ -47,6 +47,11 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
+  <object class="GtkImage" id="RectangleImage3">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
   <object class="GtkImage" id="SquareImage">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -63,6 +68,36 @@
     <property name="stock">gtk-discard</property>
   </object>
   <object class="GtkImage" id="SquareImage3">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage4">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage5">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage6">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage7">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage8">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage9">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
@@ -135,6 +170,15 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="image">RectangleImage2</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="ColorButton">
+                        <property name="label">Color</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">RectangleImage3</property>
                         <property name="use-stock">False</property>
                       </object>
                     </child>
@@ -349,35 +393,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="SquareImage4">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
-  <object class="GtkImage" id="SquareImage5">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
-  <object class="GtkImage" id="SquareImage6">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
-  <object class="GtkImage" id="SquareImage7">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
-  <object class="GtkImage" id="SquareImage8">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
-  </object>
-  <object class="GtkImage" id="SquareImage9">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-discard</property>
   </object>
 </interface>
