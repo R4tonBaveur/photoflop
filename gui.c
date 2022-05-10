@@ -21,6 +21,7 @@ GtkWidget* SepiaButton;
 GtkWidget* DarknessButton;
 GtkWidget* BrightnessButton;
 GtkWidget* BlurButton;
+GtkWidget* OilPainting;
 GtkWidget* GoBackButton;
 GtkWidget* SaveButton;
 GtkWidget* RectangleButton;
@@ -306,6 +307,55 @@ void on_Blur(){
     gtk_widget_queue_draw(DrawingArea);
 }
 
+void on_OilPainting(){
+    int r = 3;
+    int intensityLevels = 20;
+    int intensityCount[intensityLevels];
+    int averageR[intensityLevels];
+    int averageG[intensityLevels];
+    int averageB[intensityLevels];
+    for(int x=0;x<Surface->w;x++){
+        for(int y=0;y<Surface->h;y++){
+            for(int i=0;i<intensityLevels;i++){
+                intensityCount[i] = 0;
+                averageR[i] = 0;
+                averageG[i] = 0;
+                averageB[i] = 0;
+            }
+            for(int px=x-r;px<x+r;px++){
+                for(int py=y-r;py<y+r;py++){
+                    if(px>0 && px<Surface->w && py>0 && py<Surface->h && ((px-x)*(px-x)+(py-y)*(py-y))<r*r){
+                        Uint32 c = getPixel(Surface,px,py);
+                        Uint8 r,g,b;
+                        SDL_GetRGB(c,Surface->format,&r,&g,&b);
+                        int curIntensity = (int)((double)((r+g+b)/3)*intensityLevels)/255.0f;
+                        intensityCount[curIntensity]++;
+                        averageR[curIntensity] += r;
+                        averageG[curIntensity] += g;
+                        averageB[curIntensity] += b;
+                    }
+                }
+            }
+            int maxIndex = 0;
+            int curMax = intensityCount[0];
+            for(int i=0;i<intensityLevels;i++){
+                if(curMax<intensityCount[i]){
+                    curMax = intensityCount[i];
+                    maxIndex = i;
+                }
+            }
+            Uint8 r,g,b;
+            r = averageR[maxIndex] / curMax;
+            g = averageG[maxIndex] / curMax;
+            b = averageB[maxIndex] / curMax;
+            if(getPixel(SelectionZone,x,y))
+                setPixel(Surface,x,y,SDL_MapRGB(Surface->format,r,g,b));
+        }
+    }
+    update();
+    gtk_widget_queue_draw(DrawingArea);
+}
+
 void on_save(){
     char path[64];
     sprintf(path,"exports/%s",filename);
@@ -497,6 +547,7 @@ int main(int argc, char **argv){
     BrightnessButton = GTK_WIDGET(gtk_builder_get_object(builder,"BrightnessButton"));
     GoBackButton = GTK_WIDGET(gtk_builder_get_object(builder,"GoBackButton"));
     BlurButton = GTK_WIDGET(gtk_builder_get_object(builder,"BlurButton"));
+    OilPainting = GTK_WIDGET(gtk_builder_get_object(builder,"OilPaintingButton"));
     RectangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"RectangleButton"));
     CircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"CircleButton"));
     AllButton = GTK_WIDGET(gtk_builder_get_object(builder,"AllButton"));
@@ -528,6 +579,7 @@ int main(int argc, char **argv){
     g_signal_connect(DarknessButton,"activate",G_CALLBACK(on_Darkness), NULL);
     g_signal_connect(BrightnessButton,"activate",G_CALLBACK(on_Brightness), NULL);
     g_signal_connect(BlurButton,"activate",G_CALLBACK(on_Blur), NULL);
+    g_signal_connect(OilPainting,"activate",G_CALLBACK(on_OilPainting), NULL);
     g_signal_connect(RectangleButton,"activate",G_CALLBACK(on_Rectangle), NULL);
     g_signal_connect(CircleButton,"activate",G_CALLBACK(on_Circle), NULL);
     g_signal_connect(AllButton,"activate",G_CALLBACK(on_All), NULL);
