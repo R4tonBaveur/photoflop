@@ -57,6 +57,16 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>
   </object>
+  <object class="GtkImage" id="SquareImage2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage3">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
   <object class="GtkWindow" id="Window">
     <property name="can-focus">False</property>
     <child>
@@ -200,11 +210,74 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="SquareButton">
-                        <property name="label">Square</property>
+                      <object class="GtkImageMenuItem" id="DrawCircleButton">
+                        <property name="label">Circle</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="image">SquareImage</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawDiamondButton">
+                        <property name="label">Diamond</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage2</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawHexagoneButton">
+                        <property name="label" translatable="yes">Hexagone</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage3</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawSquareButton">
+                        <property name="label">Square</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage4</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawStarButton">
+                        <property name="label">Star</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage5</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawTextBubbleButton">
+                        <property name="label">Text Bubble</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage6</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawThunderButton">
+                        <property name="label">Thunder</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage7</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawTriangleButton">
+                        <property name="label">Triangle</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage8</property>
                         <property name="use-stock">False</property>
                       </object>
                     </child>
@@ -267,5 +340,30 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="SquareImage4">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage5">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage6">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage7">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage8">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
   </object>
 </interface>

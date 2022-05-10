@@ -5,10 +5,8 @@
 #include "C-Utils/stack/stack.h"
 #include <stdlib.h>
 #include <math.h>
-struct SStack{
-    struct SStack* old;
-    SDL_Surface* surface;
-};
+
+
 // GTK items
 GtkWidget* Window;
 GtkWidget* MenuBar;
@@ -28,12 +26,28 @@ GtkWidget* SaveButton;
 GtkWidget* RectangleButton;
 GtkWidget* CircleButton;
 GtkWidget* AllButton;
+GtkWidget* DrawCircleButton;
+GtkWidget* DrawDiamondButton;
+GtkWidget* DrawHexagoneButton;
+GtkWidget* DrawSquareButton;
+GtkWidget* DrawStarButton;
+GtkWidget* DrawTextBubbleButton;
+GtkWidget* DrawThunderButton;
+GtkWidget* DrawTriangleButton;
 GtkWidget* FileName;
+
+//Other declarations
+struct SStack{
+    struct SStack* old;
+    SDL_Surface* surface;
+};
 struct SStack* s;
 SDL_Surface* Surface;
 SDL_Surface* SelectionZone;
 char* filename;
 
+/**/
+// get coordonates of a clic
 void get_coord(SDL_Surface* image, size_t *x, size_t *y)
 {
     static int counter = 0;
@@ -72,8 +86,7 @@ void get_coord(SDL_Surface* image, size_t *x, size_t *y)
 }
 
 // Resize the Surface to fit the app
-SDL_Surface* resize(SDL_Surface* image){
-    int target = 500;
+SDL_Surface* resize(SDL_Surface* image,int target){
     int width = target;
     int height = target;
     if(image->w>image->h){
@@ -92,8 +105,61 @@ SDL_Surface* resize(SDL_Surface* image){
     return res;
 }
 
-// Callback Functions
+// clamp an integer
+int clamp(int val, int maxval){
+    if(val>maxval)
+        return maxval;
+    return val;
+}
 
+// update the surface stack
+void update(){
+    struct SStack* new = malloc(sizeof(struct SStack));
+    SDL_Surface* newSurface = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
+    for(int x=0;x<Surface->w;x++){
+        for(int y=0;y<Surface->h;y++){
+            setPixel(newSurface,x,y,getPixel(Surface,x,y));
+        }
+    }
+    new->old = s;
+    new->surface = newSurface;
+    s = new;
+}
+
+// draw a black shape from a file
+void drawShape(char* shape){
+    size_t x1,y1,x2,y2;
+    get_coord(Surface,&x1,&y1);
+    get_coord(Surface,&x2,&y2);
+    
+    if(x2<x1){
+        size_t mem = x1;
+        x1 = x2;
+        x2 = mem;
+    }
+    if(y2<y1){
+        size_t mem = y1;
+        y1 = y2;
+        y2 = mem;
+    }
+    int min = x2-x1;
+    if(y1-y2<min){
+        min = y2-y1;
+    }
+    SDL_Surface* square = resize(loadImage(shape),min);
+    for(int x=0;x<min;x++){
+        for(int y=0;y<min;y++){
+            if(!getPixel(square,x,y)){
+                setPixel(Surface,x1+x,y1+y,0);
+            }
+        }
+    }
+    //displaySurface(square);
+    gtk_widget_queue_draw(DrawingArea);
+    update();
+}
+
+// Callback Functions
 void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data){
     if(!Surface)
         return;
@@ -115,18 +181,6 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data){
         }
     }
     cairo_stroke(cr);
-}
-void update(){
-    struct SStack* new = malloc(sizeof(struct SStack));
-    SDL_Surface* newSurface = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
-    for(int x=0;x<Surface->w;x++){
-        for(int y=0;y<Surface->h;y++){
-            setPixel(newSurface,x,y,getPixel(Surface,x,y));
-        }
-    }
-    new->old = s;
-    new->surface = newSurface;
-    s = new;
 }
 
 void on_GoBack(){
@@ -163,7 +217,11 @@ void on_Sepia(){
             Uint32 pixel = getPixel(Surface, x, y);
             Uint8 r, g, b;
             SDL_GetRGB(pixel, Surface->format, &r, &g, &b);
-            pixel = SDL_MapRGB(Surface->format, r * 0.393 + g * 0.769 + b * 0.189, r * 0.349 + g * 0.686 + b * 0.168, r * 0.272 + g * 0.534 + b * 0.131);
+            pixel = SDL_MapRGB(
+                Surface->format, 
+                clamp(r * 0.393 + g * 0.769 + b * 0.189,255), 
+                clamp(r * 0.349 + g * 0.686 + b * 0.168,255), 
+                clamp(r * 0.272 + g * 0.534 + b * 0.131,255));
             if(getPixel(SelectionZone,x,y))
                 setPixel(Surface, x, y, pixel);
         }
@@ -256,10 +314,10 @@ void on_Rectangle(){
     size_t x1,y1,x2,y2;
     get_coord(Surface,&x1,&y1);
     get_coord(Surface,&x2,&y2);
-    printf("%zu\n",x1);
+    /*printf("%zu\n",x1);
     printf("%zu\n",y1);
     printf("%zu\n",x2);
-    printf("%zu\n",y2);
+    printf("%zu\n",y2);*/
     if(x2<x1){
         size_t mem = x1;
         x1 = x2;
@@ -314,6 +372,31 @@ void on_All(){
     }
 }
 
+void on_DrawCircle(){
+    drawShape("drawings/circle.png");
+}
+void on_DrawDiamond(){
+    drawShape("drawings/diamond.png");
+}
+void on_DrawHexagone(){
+    drawShape("drawings/hexagone.png");
+}
+void on_DrawSquare(){
+    drawShape("drawings/square.png");
+}
+void on_DrawStar(){
+    drawShape("drawings/star.png");
+}
+void on_DrawTextBubble(){
+    drawShape("drawings/text_bubble.png");
+}
+void on_DrawThunder(){
+    drawShape("drawings/thunder.png");
+}
+void on_DrawTriangle(){
+    drawShape("drawings/triangle.png");
+}
+
 // Main function
 int main(int argc, char **argv){
     if(argc<2){
@@ -334,14 +417,13 @@ int main(int argc, char **argv){
 
     // The image
     filename = argv[1];
-    Surface = resize(loadImage(filename));
+    Surface = resize(loadImage(filename),500);
     if(Surface==NULL){
         printf("Error while loading surface\n");
         return 1;
     }
     // The zone image
     SelectionZone = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
-    printf("selection zone allocated\n");
     for(int x=0;x<SelectionZone->w;x++){
         for(int y=0;y<SelectionZone->h;y++){
             setPixel(SelectionZone,x,y,RGBToUint32(SelectionZone,255,255,255));
@@ -374,7 +456,14 @@ int main(int argc, char **argv){
     CircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"CircleButton"));
     AllButton = GTK_WIDGET(gtk_builder_get_object(builder,"AllButton"));
     FileName = GTK_WIDGET(gtk_builder_get_object(builder,"FileName"));
-
+    DrawCircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawCircleButton"));
+    DrawDiamondButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawDiamondButton"));
+    DrawHexagoneButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawHexagoneButton"));
+    DrawSquareButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawSquareButton"));
+    DrawStarButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawStarButton"));
+    DrawTextBubbleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawTextBubbleButton"));
+    DrawThunderButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawThunderButton"));
+    DrawTriangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawTriangleButton"));
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
     gtk_window_set_resizable(Window, FALSE);    
@@ -395,6 +484,14 @@ int main(int argc, char **argv){
     g_signal_connect(RectangleButton,"activate",G_CALLBACK(on_Rectangle), NULL);
     g_signal_connect(CircleButton,"activate",G_CALLBACK(on_Circle), NULL);
     g_signal_connect(AllButton,"activate",G_CALLBACK(on_All), NULL);
+    g_signal_connect(DrawCircleButton,"activate",G_CALLBACK(on_DrawCircle), NULL);
+    g_signal_connect(DrawDiamondButton,"activate",G_CALLBACK(on_DrawDiamond), NULL);
+    g_signal_connect(DrawHexagoneButton,"activate",G_CALLBACK(on_DrawHexagone), NULL);
+    g_signal_connect(DrawSquareButton,"activate",G_CALLBACK(on_DrawSquare), NULL);
+    g_signal_connect(DrawStarButton,"activate",G_CALLBACK(on_DrawStar), NULL);
+    g_signal_connect(DrawTextBubbleButton,"activate",G_CALLBACK(on_DrawTextBubble), NULL);
+    g_signal_connect(DrawThunderButton,"activate",G_CALLBACK(on_DrawThunder), NULL);
+    g_signal_connect(DrawTriangleButton,"activate",G_CALLBACK(on_DrawTriangle), NULL);
     gtk_label_set_text(GTK_LABEL (FileName), filename);
 
     // Runs the main loop.
