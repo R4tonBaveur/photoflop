@@ -281,6 +281,15 @@
                         <property name="use-stock">False</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="DrawRectangleButton">
+                        <property name="label">Rectangle</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">SquareImage9</property>
+                        <property name="use-stock">False</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -362,6 +371,11 @@
     <property name="stock">gtk-discard</property>
   </object>
   <object class="GtkImage" id="SquareImage8">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-discard</property>
+  </object>
+  <object class="GtkImage" id="SquareImage9">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="stock">gtk-discard</property>

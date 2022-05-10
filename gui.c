@@ -34,6 +34,7 @@ GtkWidget* DrawStarButton;
 GtkWidget* DrawTextBubbleButton;
 GtkWidget* DrawThunderButton;
 GtkWidget* DrawTriangleButton;
+GtkWidget* DrawRectangleButton;
 GtkWidget* FileName;
 
 //Other declarations
@@ -396,7 +397,31 @@ void on_DrawThunder(){
 void on_DrawTriangle(){
     drawShape("drawings/triangle.png");
 }
-
+void on_DrawRectangle(){
+    size_t x1,y1,x2,y2;
+    get_coord(Surface,&x1,&y1);
+    get_coord(Surface,&x2,&y2);
+    if(x2<x1){
+        size_t mem = x1;
+        x1 = x2;
+        x2 = mem;
+    }
+    if(y2<y1){
+        size_t mem = y1;
+        y1 = y2;
+        y2 = mem;
+    }
+    for(int x=x1;x<x2;x++){
+        setPixel(Surface,x,y1,0);
+        setPixel(Surface,x,y2,0);
+    }
+    for(int y=y1;y<y2;y++){
+        setPixel(Surface,x1,y,0);
+        setPixel(Surface,x2,y,0);
+    }
+    update();
+    gtk_widget_queue_draw(DrawingArea);
+}
 // Main function
 int main(int argc, char **argv){
     if(argc<2){
@@ -464,6 +489,7 @@ int main(int argc, char **argv){
     DrawTextBubbleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawTextBubbleButton"));
     DrawThunderButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawThunderButton"));
     DrawTriangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawTriangleButton"));
+    DrawRectangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"DrawRectangleButton"));
     // Displaying the window
     gtk_window_set_default_size(GTK_WINDOW(Window),500,500);
     gtk_window_set_resizable(Window, FALSE);    
@@ -492,6 +518,7 @@ int main(int argc, char **argv){
     g_signal_connect(DrawTextBubbleButton,"activate",G_CALLBACK(on_DrawTextBubble), NULL);
     g_signal_connect(DrawThunderButton,"activate",G_CALLBACK(on_DrawThunder), NULL);
     g_signal_connect(DrawTriangleButton,"activate",G_CALLBACK(on_DrawTriangle), NULL);
+    g_signal_connect(DrawRectangleButton,"activate",G_CALLBACK(on_DrawRectangle), NULL);
     gtk_label_set_text(GTK_LABEL (FileName), filename);
 
     // Runs the main loop.
