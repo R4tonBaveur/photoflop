@@ -48,6 +48,7 @@ struct SStack* s;
 SDL_Surface* Surface;
 SDL_Surface* SelectionZone;
 char* filename;
+int SurfaceVersion;
 
 /**/
 // get coordonates of a clic
@@ -126,6 +127,7 @@ void update(){
     new->old = s;
     new->surface = newSurface;
     s = new;
+    SurfaceVersion++;
 }
 
 // draw a black shape from a file
@@ -186,10 +188,15 @@ void on_draw(GtkWidget *widget, cairo_t *cr, gpointer data){
 }
 
 void on_GoBack(){
-    free(s->surface);
-    s = s->old;
-    Surface = s->surface;
-    gtk_widget_queue_draw(DrawingArea);
+    if(SurfaceVersion > 0){
+        free(s->surface);
+        s = s->old;
+        Surface = s->surface;
+        gtk_widget_queue_draw(DrawingArea);
+        SurfaceVersion--;
+    } else {
+        printf("can't go back from original image\n");
+    }
 }
 
 void on_GrayScale(){
@@ -423,11 +430,7 @@ void on_All(){
         }
     }
 }
-int absolute(int x){
-    if(x<0)
-        return -x;
-    return x;
-}
+
 void on_Color(){
     size_t x1,y1;
     get_coord(Surface,&x1,&y1);
@@ -492,6 +495,8 @@ void on_DrawRectangle(){
     update();
     gtk_widget_queue_draw(DrawingArea);
 }
+
+
 // Main function
 int main(int argc, char **argv){
     if(argc<2){
@@ -517,6 +522,8 @@ int main(int argc, char **argv){
         printf("Error while loading surface\n");
         return 1;
     }
+    SurfaceVersion = -1;
+
     // The zone image
     SelectionZone = SDL_CreateRGBSurface(0,Surface->w,Surface->h,32,0,0,0,0);
     for(int x=0;x<SelectionZone->w;x++){
