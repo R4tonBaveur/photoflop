@@ -177,6 +177,7 @@ void update(){
     new->surface = newSurface;
     s = new;
     SurfaceVersion++;
+    printf("Image Version: %d\n",SurfaceVersion);
 }
 
 // draw a black shape from a file
@@ -243,6 +244,7 @@ void on_GoBack(){
         Surface = s->surface;
         gtk_widget_queue_draw(DrawingArea);
         SurfaceVersion--;
+        printf("Image Version: %d\n",SurfaceVersion);
     } else {
         printf("can't go back from original image\n");
     }
@@ -462,7 +464,8 @@ void on_Rectangle(){
             }
         }
     }
-    //displaySurface(SelectionZone);
+    update();
+    gtk_widget_queue_draw(DrawingArea);
 }
 
 void on_Circle(){
