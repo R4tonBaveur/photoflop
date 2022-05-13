@@ -22,6 +22,7 @@ GtkWidget* DarknessButton;
 GtkWidget* BrightnessButton;
 GtkWidget* BlurButton;
 GtkWidget* OilPainting;
+GtkWidget* BinarizationButton;
 GtkWidget* GoBackButton;
 GtkWidget* SaveButton;
 GtkWidget* RectangleButton;
@@ -113,6 +114,54 @@ int clamp(int val, int maxval){
     if(val>maxval)
         return maxval;
     return val;
+}
+
+// Returns a binarization threshold using otsu algorithm
+int otsu(SDL_Surface* image){
+    int precision = 255;
+    int histogram[precision];
+    float alpha[precision];
+    int totalPixel = image->w * image->h;
+    for(int i=0;i<precision;i++){
+        histogram[i]=0;
+        alpha[i] = 0;
+    }
+    for(int x=0;x<image->w;x++){
+        for(int y=0;y<image->h;y++){
+            Uint32 pixel = getPixel(image,x,y);
+            Uint8 val;
+            SDL_GetRGB(pixel, image->format, &val, &val, &val);
+            if(precision*val/255<precision){
+				histogram[precision*val/255]+=1;
+			}
+        }
+    }
+    for(int i=0;i<precision;i++){
+        float Wb = 0;
+        float Ub = 0;
+        for(int backgroundLayers=0;backgroundLayers < i;backgroundLayers++){
+            Wb+=histogram[backgroundLayers];
+            Ub+=backgroundLayers*histogram[backgroundLayers];
+        }
+        Ub/=Wb;
+        Wb/=totalPixel;
+        float Wf = 0;
+        float Uf = 0;
+        for(int foregroundLayers=i;foregroundLayers<precision;foregroundLayers++){
+            Wf+=histogram[foregroundLayers];
+            Uf+=foregroundLayers*histogram[foregroundLayers];
+        }
+        Uf/=Wf;
+        Wf/=totalPixel;
+        alpha[i] = Wb * Wf * ((Ub-Uf) * (Ub - Uf));
+    }
+    int maxAlphaIndex = 1;
+    for(int i=1;i<precision;i++){
+        if(alpha[i]>alpha[maxAlphaIndex] || i==0){
+            maxAlphaIndex = i;
+        }
+    }
+    return maxAlphaIndex * 255 / precision;
 }
 
 // update the surface stack
@@ -363,6 +412,23 @@ void on_OilPainting(){
     gtk_widget_queue_draw(DrawingArea);
 }
 
+void on_Binarization(){
+    int threshold = otsu(Surface);
+    for(int x=0;x<Surface->w;x++){
+        for(int y=0;y<Surface->h;y++){
+            if(getPixel(SelectionZone,x,y)){
+                Uint32 c = getPixel(Surface,x,y);
+                Uint8 r,g,b;
+                SDL_GetRGB(c,Surface->format,&r,&g,&b);
+                int comp = (((r+g+b)/3)>=threshold)*255;
+                setPixel(Surface,x,y,SDL_MapRGB(Surface->format,comp,comp,comp));
+            }
+        }
+    }
+    update();
+    gtk_widget_queue_draw(DrawingArea);
+}
+
 void on_save(){
     char path[64];
     sprintf(path,"exports/%s",filename);
@@ -556,6 +622,7 @@ int main(int argc, char **argv){
     BlurButton = GTK_WIDGET(gtk_builder_get_object(builder,"BlurButton"));
     OilPainting = GTK_WIDGET(gtk_builder_get_object(builder,"OilPaintingButton"));
     RectangleButton = GTK_WIDGET(gtk_builder_get_object(builder,"RectangleButton"));
+    BinarizationButton = GTK_WIDGET(gtk_builder_get_object(builder,"BinarizationButton"));
     CircleButton = GTK_WIDGET(gtk_builder_get_object(builder,"CircleButton"));
     AllButton = GTK_WIDGET(gtk_builder_get_object(builder,"AllButton"));
     ColorButton = GTK_WIDGET(gtk_builder_get_object(builder,"ColorButton"));
@@ -587,6 +654,7 @@ int main(int argc, char **argv){
     g_signal_connect(BrightnessButton,"activate",G_CALLBACK(on_Brightness), NULL);
     g_signal_connect(BlurButton,"activate",G_CALLBACK(on_Blur), NULL);
     g_signal_connect(OilPainting,"activate",G_CALLBACK(on_OilPainting), NULL);
+    g_signal_connect(BinarizationButton,"activate",G_CALLBACK(on_Binarization), NULL);
     g_signal_connect(RectangleButton,"activate",G_CALLBACK(on_Rectangle), NULL);
     g_signal_connect(CircleButton,"activate",G_CALLBACK(on_Circle), NULL);
     g_signal_connect(AllButton,"activate",G_CALLBACK(on_All), NULL);
